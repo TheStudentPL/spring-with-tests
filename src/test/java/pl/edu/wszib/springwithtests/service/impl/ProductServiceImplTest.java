@@ -53,5 +53,15 @@ public class ProductServiceImplTest {
         Mockito.verify(mockDao, Mockito.times(1)).save(product);
     }
 
+    @Test
+    public void testRemove(){
+        int id = 12;
+
+        productService.remove(id);
+        Mockito.verify(mockDao, Mockito.times(1)).deleteById(id);
+
+
+    }
+
 
 }
