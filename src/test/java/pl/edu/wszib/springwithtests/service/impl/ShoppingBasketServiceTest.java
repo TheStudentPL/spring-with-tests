@@ -110,7 +110,7 @@ public class ShoppingBasketServiceTest {
         item.setProduct(mapper.map(productDTO, Product.class));
 
         Mockito.when(shoppingBasketItemDao.
-                findByProductIdAAndShoppingBasketId(productDTO.getId(),testShoppingBasketID))
+                findByProductIdAndShoppingBasketId(productDTO.getId(),testShoppingBasketID))
                 .thenReturn(item);
 
         Mockito.when(shoppingBasketItemDao

@@ -85,7 +85,7 @@ public class ShoppingBasketServiceImpl implements ShoppingBasketService {
         }
 
 
-        ShoppingBasketItem item = shoppingBasketItemDao.findByProductIdAAndShoppingBasketId(product.getId(), basket.getId());
+        ShoppingBasketItem item = shoppingBasketItemDao.findByProductIdAndShoppingBasketId(product.getId(), basket.getId());
         if(item !=null){
             item.setAmount(item.getAmount()+1);
         } else {
