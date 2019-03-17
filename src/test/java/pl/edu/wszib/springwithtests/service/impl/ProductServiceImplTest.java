@@ -2,6 +2,7 @@ package pl.edu.wszib.springwithtests.service.impl;
 
 import org.dozer.DozerBeanMapper;
 import org.junit.Test;
+import org.junit.runners.JUnit4;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -11,8 +12,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import pl.edu.wszib.springwithtests.dao.ProductDao;
+import pl.edu.wszib.springwithtests.dto.ProductDTO;
+import pl.edu.wszib.springwithtests.model.Product;
+import pl.edu.wszib.springwithtests.model.Vat;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.mockito.MockitoAnnotations.initMocks;
+
+@RunWith(JUnit4.class)
 public class ProductServiceImplTest {
 
     @InjectMocks
@@ -27,14 +33,24 @@ public class ProductServiceImplTest {
 
     @Before
     public void setUp(){
-        productService = new ProductServiceImpl();
-        mockDao = Mockito.mock(ProductDao.class);
-        mapper = new DozerBeanMapper();
+        initMocks(this);
     }
 
     @Test
-    public void test(){
-        productService.add(null);
+    public void testAdd(){
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setName("test product");
+        productDTO.setCost(10d);
+        productDTO.setVat(Vat.VALUE_8);
+
+        Product product = Mockito.mock(Product.class);
+
+        Mockito.when(mapper.map(productDTO, Product.class)).thenReturn(product);
+        Mockito.when(mockDao.save(product)).thenReturn(product);
+
+        productService.add(productDTO);
+
+        Mockito.verify(mockDao, Mockito.times(1)).save(product);
     }
 
 
