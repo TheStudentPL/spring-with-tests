@@ -120,4 +120,44 @@ public class SpringWithTestsApplicationTests {
 
 
 	}
+
+	@Test
+	public void testShoppingBasketExistProductExistShoppingBusketItemNotExist(){
+		ShoppingBasket shoppingBasket = new ShoppingBasket();
+		shoppingBasket = shoppingBasketDao.save(shoppingBasket); //shopping basket do bazy
+
+		Product product = new Product();
+		product.setCost(211d);
+		product.setVat(Vat.VALUE_23);
+		product.setName("TestNajtrudniejszy");
+		product = productDao.save(product);
+
+
+		ShoppingBasketDTO result = service.addProduct( shoppingBasket.getId(), mapper.map(product, ProductDTO.class));
+
+		final Product copyProduct = product;
+
+
+		Assert.assertEquals(shoppingBasket.getId(), result.getId());
+
+		Assert.assertEquals(1, result.getItems().size());
+
+
+		Assert.assertTrue(result.getItems()
+				.stream()
+				.anyMatch(i ->i.getProduct().getId().equals(copyProduct.getId())));
+
+
+		Assert.assertTrue(result.getItems()
+				.stream()
+				.filter(i ->i.getProduct().getId()
+						.equals(copyProduct.getId()))
+				.findFirst()
+				.map(i -> i.getAmount() ==  1)
+				.orElse(false));
+
+		Assert.assertNotNull(shoppingBasketItemDao
+				.findByProductIdAndShoppingBasketId(product.getId(), shoppingBasket.getId()));
+
+	}
 }
