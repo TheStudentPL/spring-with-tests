@@ -123,4 +123,35 @@ public class SpringMVCTest {
                        ,ShoppingBasketDTO.class);
                         }
 
+    @Test
+    public void testShoppingBasketExistProductExistShoppingBasketItemNotExist() throws Exception {
+        ShoppingBasket shoppingBasket = new ShoppingBasket();
+        shoppingBasket = shoppingBasketDao.save(shoppingBasket); //shopping basket do bazy
+
+        Product product = new Product();
+        product.setCost(211d);
+        product.setVat(Vat.VALUE_23);
+        product.setName("TestNajtrudniejszy");
+        product = productDao.save(product);
+
+
+        ProductDTO productDTO = mapper.map(product, ProductDTO.class);
+
+        MvcResult result =  mockMvc
+                .perform(MockMvcRequestBuilders.post("/shoppingBasket/add")
+                .contentType("application/json")
+                .content(new Gson().toJson(productDTO))
+                .param("shoppingBasketId", String.valueOf(shoppingBasket.getId())))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json;charset=UTF-8"))
+                .andReturn();
+
+        ShoppingBasketDTO shoppingBasketDTO =
+                new Gson()
+                        .fromJson(result.getResponse()
+                        .getContentAsString()
+                       ,ShoppingBasketDTO.class);
+                        }
+
 }
